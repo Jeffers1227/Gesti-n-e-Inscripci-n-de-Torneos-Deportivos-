@@ -65,7 +65,7 @@ public class InscripcionController {
         if (inscripcionService.yaInscrito(request.eventoId(), request.participanteId())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El participante ya está inscrito en este evento");
         }
-        return inscripcionService.crear(request.eventoId(), request.participanteId());
+        return inscripcionService.crear(request.eventoId(), request.participanteId(), request.equipo());
     }
 
     @PatchMapping("/{id}/cancelar")
@@ -82,6 +82,6 @@ public class InscripcionController {
         return new CountResponse(inscripcionService.listar().size());
     }
 
-    public record InscripcionCreateRequest(long eventoId, long participanteId) {}
+    public record InscripcionCreateRequest(long eventoId, long participanteId, String equipo) {}
     public record CountResponse(int total) {}
 }

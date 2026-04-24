@@ -41,13 +41,13 @@ public class DataSeeder {
             participantes.crear("Ana Gómez",       "ana@correo.com",     "987001004", "JUNIOR");
             participantes.crear("Diego Paredes",   "diego@correo.com",   "987001005", "GENERAL");
 
-            // Inscripciones (eventoId, participanteId)
-            inscripciones.crear(1, 1);
-            inscripciones.crear(1, 2);
-            inscripciones.crear(2, 3);
-            inscripciones.crear(2, 4);
-            inscripciones.crear(3, 1);
-            inscripciones.crear(3, 5);
+            // Inscripciones (eventoId, participanteId, equipo)
+            inscripciones.crear(1, 1, "Equipo A");
+            inscripciones.crear(1, 2, "Equipo A");
+            inscripciones.crear(2, 3, "Equipo B");
+            inscripciones.crear(2, 4, "Equipo B");
+            inscripciones.crear(3, 1, null);
+            inscripciones.crear(3, 5, null);
 
             // Mensajes de contacto
             contacto.registrar("Roberto Salinas", "roberto@mail.com", "Consulta horarios",
