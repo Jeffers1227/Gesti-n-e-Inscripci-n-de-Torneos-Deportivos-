@@ -1,7 +1,7 @@
 // service/ContactoService.java
 package com.example.demo.service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,35 +10,32 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.entity.Contacto;
+import com.example.demo.entity.ContactoMensaje;
 
 @Service
 public class ContactoService {
     private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Contacto> contactos = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Long, ContactoMensaje> mensajes = new ConcurrentHashMap<>();
+    private static final String EMAIL_PRINCIPAL = "EventosPJos@gmail.com";
 
-    public List<Contacto> listar() {
-        return contactos.values().stream()
-                .sorted(Comparator.comparingLong(Contacto::id).reversed())
+    public String emailPrincipal() {
+        return EMAIL_PRINCIPAL;
+    }
+
+    public List<ContactoMensaje> listarMensajes() {
+        return mensajes.values().stream()
+                .sorted(Comparator.comparing(ContactoMensaje::recibidoEn).reversed())
                 .toList();
     }
 
-    public Contacto obtener(long id) {
-        return contactos.get(id);
+    public ContactoMensaje obtener(long id) {
+        return mensajes.get(id);
     }
 
-    public boolean existe(long id) {
-        return contactos.containsKey(id);
-    }
-
-    public Contacto registrar(String nombre, String email, String asunto, String mensaje) {
+    public ContactoMensaje registrar(String nombre, String correo, String asunto, String mensaje) {
         long id = secuenciaId.getAndIncrement();
-        Contacto contacto = new Contacto(id, nombre, email, asunto, mensaje, LocalDateTime.now());
-        contactos.put(id, contacto);
-        return contacto;
-    }
-
-    public boolean eliminar(long id) {
-        return contactos.remove(id) != null;
+        ContactoMensaje m = new ContactoMensaje(id, nombre, correo, asunto, mensaje, Instant.now());
+        mensajes.put(id, m);
+        return m;
     }
 }

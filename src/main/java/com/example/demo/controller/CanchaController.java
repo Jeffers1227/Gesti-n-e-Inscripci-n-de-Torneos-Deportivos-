@@ -42,14 +42,33 @@ public class CanchaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cancha crear(@RequestBody Cancha cancha) {
-        return canchaService.crear(cancha.nombre(), cancha.ubicacion(), cancha.tipo(), cancha.precioHora());
+    public Cancha crear(@RequestBody CanchaCreateRequest request) {
+        String nombre = request.nombre();
+        String ubicacion = request.ubicacion();
+        String tipo = request.tipo();
+        if (nombre == null || nombre.isBlank() || ubicacion == null || ubicacion.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre y ubicación");
+        }
+        if (request.precioPorHora() < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El precio no puede ser negativo");
+        }
+        String tipoFinal = (tipo == null || tipo.isBlank()) ? "STANDARD" : tipo.trim().toUpperCase();
+        return canchaService.crear(nombre.trim(), ubicacion.trim(), tipoFinal, request.precioPorHora());
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable long id) {
         if (!canchaService.eliminar(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cancha no encontrada");
         }
     }
+
+    @GetMapping("/count")
+    public CountResponse contar() {
+        return new CountResponse(canchaService.listar().size());
+    }
+
+    public record CanchaCreateRequest(String nombre, String ubicacion, String tipo, double precioPorHora) {}
+    public record CountResponse(int total) {}
 }
