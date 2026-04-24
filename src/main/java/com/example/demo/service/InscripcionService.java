@@ -45,9 +45,10 @@ public class InscripcionService {
                 .anyMatch(i -> i.eventoId() == eventoId && i.participanteId() == participanteId);
     }
 
-    public Inscripcion crear(long eventoId, long participanteId) {
+    public Inscripcion crear(long eventoId, long participanteId, String equipo) {
         long id = secuenciaId.getAndIncrement();
-        Inscripcion inscripcion = new Inscripcion(id, eventoId, participanteId, Instant.now(), "CONFIRMADA");
+        String equipoNormalizado = equipo == null || equipo.isBlank() ? null : equipo.trim();
+        Inscripcion inscripcion = new Inscripcion(id, eventoId, participanteId, equipoNormalizado, Instant.now(), "CONFIRMADA");
         inscripciones.put(id, inscripcion);
         return inscripcion;
     }
@@ -55,7 +56,7 @@ public class InscripcionService {
     public boolean cancelar(long id) {
         Inscripcion i = inscripciones.get(id);
         if (i == null) return false;
-        inscripciones.put(id, new Inscripcion(i.id(), i.eventoId(), i.participanteId(), i.fechaInscripcion(), "CANCELADA"));
+        inscripciones.put(id, new Inscripcion(i.id(), i.eventoId(), i.participanteId(), i.equipo(), i.fechaInscripcion(), "CANCELADA"));
         return true;
     }
 }
