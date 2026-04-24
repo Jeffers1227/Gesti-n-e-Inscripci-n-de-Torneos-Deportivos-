@@ -316,3 +316,162 @@ async function eliminarInscripcion(id) {
     }
   }
 }
+
+// ============ FUNCIONES PARA CANCHAS ============
+async function crearCancha(e) {
+  e.preventDefault();
+  const cancha = {
+    nombre: document.getElementById("canchaNombre").value,
+    ubicacion: document.getElementById("canchaUbicacion").value,
+    tipo: document.getElementById("canchaSupericie").value,
+    precioPorHora: 0,
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/canchas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cancha),
+    });
+
+    if (response.ok) {
+      showMessage("chanchaMessage", "Cancha creada exitosamente", "success");
+      document.querySelector("#canchas form").reset();
+      listarCanchas();
+    } else {
+      showMessage("chanchaMessage", "Error al crear la cancha", "error");
+    }
+  } catch (error) {
+    showMessage(
+      "chanchaMessage",
+      "Error de conexión: " + error.message,
+      "error"
+    );
+  }
+}
+
+async function listarCanchas() {
+  try {
+    const response = await fetch(`${API_URL}/canchas`);
+    const canchas = await response.json();
+
+    let html = "";
+    canchas.forEach((cancha) => {
+      html += `
+        <div class="result-item">
+          <h3>${cancha.nombre}</h3>
+          <p><strong>ID:</strong> ${cancha.id}</p>
+          <p><strong>Ubicación:</strong> ${cancha.ubicacion}</p>
+          <p><strong>Tipo:</strong> ${cancha.tipo || "N/A"}</p>
+          <p><strong>Precio por hora:</strong> $${cancha.precioPorHora}</p>
+          <button class="delete-btn" onclick="eliminarCancha(${cancha.id})">Eliminar</button>
+        </div>
+      `;
+    });
+
+    document.getElementById("canchasList").innerHTML =
+      html || "<p>No hay canchas registradas</p>";
+  } catch (error) {
+    document.getElementById("canchasList").innerHTML =
+      `<div class="error">Error: ${error.message}</div>`;
+  }
+}
+
+async function eliminarCancha(id) {
+  if (confirm("¿Estás seguro de que deseas eliminar esta cancha?")) {
+    try {
+      const response = await fetch(`${API_URL}/canchas/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        listarCanchas();
+        showMessage("chanchaMessage", "Cancha eliminada exitosamente", "success");
+      } else {
+        alert("Error al eliminar la cancha");
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  }
+}
+
+// ============ FUNCIONES PARA CONTACTOS ============
+async function enviarContacto(e) {
+  e.preventDefault();
+  const contacto = {
+    nombre: document.getElementById("contactoNombre").value,
+    correo: document.getElementById("contactoEmail").value,
+    asunto: document.getElementById("contactoAsunto").value,
+    mensaje: document.getElementById("contactoMensaje").value,
+  };
+
+  try {
+    const response = await fetch(`${API_URL}/contacto`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(contacto),
+    });
+
+    if (response.ok) {
+      showMessage("contactoMessage", "Mensaje enviado exitosamente", "success");
+      document.querySelector("#contactos form").reset();
+      listarContactos();
+    } else {
+      showMessage("contactoMessage", "Error al enviar el mensaje", "error");
+    }
+  } catch (error) {
+    showMessage(
+      "contactoMessage",
+      "Error de conexión: " + error.message,
+      "error"
+    );
+  }
+}
+
+async function listarContactos() {
+  try {
+    const response = await fetch(`${API_URL}/contacto/mensajes`);
+    const contactos = await response.json();
+
+    let html = "";
+    contactos.forEach((contacto) => {
+      html += `
+        <div class="result-item">
+          <h3>${contacto.asunto}</h3>
+          <p><strong>ID:</strong> ${contacto.id}</p>
+          <p><strong>Nombre:</strong> ${contacto.nombre}</p>
+          <p><strong>Email:</strong> ${contacto.correo}</p>
+          <p><strong>Mensaje:</strong> ${contacto.mensaje}</p>
+          <p><strong>Fecha:</strong> ${contacto.recibidoEn || "N/A"}</p>
+          <button class="delete-btn" onclick="eliminarContacto(${contacto.id})">Eliminar</button>
+        </div>
+      `;
+    });
+
+    document.getElementById("contactosList").innerHTML =
+      html || "<p>No hay mensajes de contacto registrados</p>";
+  } catch (error) {
+    document.getElementById("contactosList").innerHTML =
+      `<div class="error">Error: ${error.message}</div>`;
+  }
+}
+
+async function eliminarContacto(id) {
+  if (confirm("¿Estás seguro de que deseas eliminar este mensaje?")) {
+    try {
+      const response = await fetch(`${API_URL}/contacto/mensajes/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        listarContactos();
+        showMessage("contactoMessage", "Mensaje eliminado exitosamente", "success");
+      } else {
+        alert("Error al eliminar el mensaje");
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  }
+}

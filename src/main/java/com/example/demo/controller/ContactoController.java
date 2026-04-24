@@ -4,6 +4,7 @@ package com.example.demo.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +66,14 @@ public class ContactoController {
     @GetMapping("/mensajes/count")
     public CountResponse contar() {
         return new CountResponse(contactoService.listarMensajes().size());
+    }
+
+    @DeleteMapping("/mensajes/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarMensaje(@PathVariable long id) {
+        if (!contactoService.eliminar(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mensaje no encontrado");
+        }
     }
 
     public record ContactoInfo(String emailPrincipal) {}

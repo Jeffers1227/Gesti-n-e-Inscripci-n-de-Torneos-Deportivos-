@@ -59,4 +59,8 @@ public class InscripcionService {
         inscripciones.put(id, new Inscripcion(i.id(), i.eventoId(), i.participanteId(), i.equipo(), i.fechaInscripcion(), "CANCELADA"));
         return true;
     }
+
+    public boolean eliminar(long id) {
+        return inscripciones.remove(id) != null;
+    }
 }

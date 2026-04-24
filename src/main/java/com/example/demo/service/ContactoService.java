@@ -38,4 +38,8 @@ public class ContactoService {
         mensajes.put(id, m);
         return m;
     }
+
+    public boolean eliminar(long id) {
+        return mensajes.remove(id) != null;
+    }
 }

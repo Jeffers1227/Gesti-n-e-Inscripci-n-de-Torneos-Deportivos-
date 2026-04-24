@@ -25,6 +25,12 @@
         <button class="tab-button" onclick="switchTab('inscripciones')">
           Inscripciones
         </button>
+        <button class="tab-button" onclick="switchTab('canchas')">
+          Canchas
+        </button>
+        <button class="tab-button" onclick="switchTab('contactos')">
+          Contactos
+        </button>
       </div>
 
       <!-- PESTAÑA DE EVENTOS -->
@@ -152,6 +158,70 @@
             Obtener Todas las Inscripciones
           </button>
           <div id="inscripcionesList" class="results"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA DE CANCHAS -->
+      <div id="canchas" class="tab-content">
+        <div class="section">
+          <h2>Crear Cancha</h2>
+          <form onsubmit="crearCancha(event)">
+            <div class="form-group">
+              <label>Nombre:</label>
+              <input type="text" id="canchaNombre" required />
+            </div>
+            <div class="form-group">
+              <label>Ubicación:</label>
+              <input type="text" id="canchaUbicacion" required />
+            </div>
+            <div class="form-group">
+              <label>Tipo de Superficie:</label>
+              <input type="text" id="canchaSupericie" placeholder="Ej: Césped, Cemento, Cancha sintética" />
+            </div>
+            <button type="submit">Crear Cancha</button>
+          </form>
+          <div id="chanchaMessage"></div>
+        </div>
+
+        <div class="section">
+          <h2>Listar Canchas</h2>
+          <button onclick="listarCanchas()">Obtener Todas las Canchas</button>
+          <div id="canchasList" class="results"></div>
+        </div>
+      </div>
+
+      <!-- PESTAÑA DE CONTACTOS -->
+      <div id="contactos" class="tab-content">
+        <div class="section">
+          <h2>Enviar Mensaje de Contacto</h2>
+          <form onsubmit="enviarContacto(event)">
+            <div class="form-group">
+              <label>Nombre:</label>
+              <input type="text" id="contactoNombre" required />
+            </div>
+            <div class="form-group">
+              <label>Email:</label>
+              <input type="email" id="contactoEmail" required />
+            </div>
+            <div class="form-group">
+              <label>Asunto:</label>
+              <input type="text" id="contactoAsunto" required />
+            </div>
+            <div class="form-group">
+              <label>Mensaje:</label>
+              <textarea id="contactoMensaje" rows="5" required></textarea>
+            </div>
+            <button type="submit">Enviar Mensaje</button>
+          </form>
+          <div id="contactoMessage"></div>
+        </div>
+
+        <div class="section">
+          <h2>Listar Mensajes de Contacto</h2>
+          <button onclick="listarContactos()">
+            Obtener Todos los Mensajes
+          </button>
+          <div id="contactosList" class="results"></div>
         </div>
       </div>
     </div>
