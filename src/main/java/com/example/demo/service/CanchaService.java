@@ -30,9 +30,9 @@ public class CanchaService {
         return canchas.containsKey(id);
     }
 
-    public Cancha crear(String nombre, String ubicacion, String tipo, double precioHora) {
+    public Cancha crear(String nombre, String ubicacion, String tipo, double precioPorHora) {
         long id = secuenciaId.getAndIncrement();
-        Cancha cancha = new Cancha(id, nombre, ubicacion, tipo, precioHora);
+        Cancha cancha = new Cancha(id, nombre, ubicacion, tipo, precioPorHora);
         canchas.put(id, cancha);
         return cancha;
     }
