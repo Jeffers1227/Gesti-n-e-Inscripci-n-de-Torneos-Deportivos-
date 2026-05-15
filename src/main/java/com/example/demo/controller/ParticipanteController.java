@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import com.example.demo.entity.Inscripcion;
 import com.example.demo.entity.Participante;
 import com.example.demo.service.InscripcionService;
@@ -52,12 +56,9 @@ public class ParticipanteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Participante crear(@RequestBody ParticipanteCreateRequest request) {
+    public Participante crear(@Valid @RequestBody ParticipanteCreateRequest request) {
         String nombre = request.nombre();
         String correo = request.correo();
-        if (nombre == null || nombre.isBlank() || correo == null || correo.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre y correo");
-        }
         if (participanteService.correoEnUso(correo.trim())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El correo ya está registrado");
         }
@@ -79,6 +80,10 @@ public class ParticipanteController {
         return new CountResponse(participanteService.listar().size());
     }
 
-    public record ParticipanteCreateRequest(String nombre, String correo, String telefono, String categoria) {}
+        public record ParticipanteCreateRequest(
+            @NotBlank String nombre,
+            @NotBlank @Email String correo,
+            String telefono,
+            String categoria) {}
     public record CountResponse(int total) {}
 }

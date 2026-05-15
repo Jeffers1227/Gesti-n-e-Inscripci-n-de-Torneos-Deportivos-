@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 import com.example.demo.entity.ContactoMensaje;
 import com.example.demo.service.ContactoService;
 
@@ -45,22 +49,17 @@ public class ContactoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ContactoRecibido registrar(@RequestBody ContactoCreateRequest request) {
+    public ContactoRecibido registrar(@Valid @RequestBody ContactoCreateRequest request) {
         String nombre = request.nombre();
         String correo = request.correo();
         String asunto = request.asunto();
         String mensaje = request.mensaje();
-
-        if (nombre == null || nombre.isBlank() || correo == null || correo.isBlank()
-                || mensaje == null || mensaje.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre, correo y mensaje");
-        }
         if (asunto == null || asunto.isBlank()) asunto = "Consulta";
 
         ContactoMensaje registrado = contactoService.registrar(
                 nombre.trim(), correo.trim(), asunto.trim(), mensaje.trim());
 
-        return new ContactoRecibido(registrado.id(), contactoService.emailPrincipal(), "RECIBIDO");
+        return new ContactoRecibido(registrado.getId(), contactoService.emailPrincipal(), "RECIBIDO");
     }
 
     @GetMapping("/mensajes/count")
@@ -77,7 +76,11 @@ public class ContactoController {
     }
 
     public record ContactoInfo(String emailPrincipal) {}
-    public record ContactoCreateRequest(String nombre, String correo, String asunto, String mensaje) {}
+        public record ContactoCreateRequest(
+            @NotBlank String nombre,
+            @NotBlank @Email String correo,
+            String asunto,
+            @NotBlank String mensaje) {}
     public record ContactoRecibido(long id, String emailPrincipal, String estado) {}
     public record CountResponse(int total) {}
 }

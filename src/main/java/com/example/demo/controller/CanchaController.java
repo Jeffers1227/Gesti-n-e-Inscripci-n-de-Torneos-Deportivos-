@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+
 import com.example.demo.entity.Cancha;
 import com.example.demo.service.CanchaService;
 
@@ -42,16 +46,10 @@ public class CanchaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cancha crear(@RequestBody CanchaCreateRequest request) {
+    public Cancha crear(@Valid @RequestBody CanchaCreateRequest request) {
         String nombre = request.nombre();
         String ubicacion = request.ubicacion();
         String tipo = request.tipo();
-        if (nombre == null || nombre.isBlank() || ubicacion == null || ubicacion.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre y ubicación");
-        }
-        if (request.precioPorHora() < 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El precio no puede ser negativo");
-        }
         String tipoFinal = (tipo == null || tipo.isBlank()) ? "STANDARD" : tipo.trim().toUpperCase();
         return canchaService.crear(nombre.trim(), ubicacion.trim(), tipoFinal, request.precioPorHora());
     }
@@ -69,6 +67,10 @@ public class CanchaController {
         return new CountResponse(canchaService.listar().size());
     }
 
-    public record CanchaCreateRequest(String nombre, String ubicacion, String tipo, double precioPorHora) {}
+        public record CanchaCreateRequest(
+            @NotBlank String nombre,
+            @NotBlank String ubicacion,
+            String tipo,
+            @PositiveOrZero double precioPorHora) {}
     public record CountResponse(int total) {}
 }

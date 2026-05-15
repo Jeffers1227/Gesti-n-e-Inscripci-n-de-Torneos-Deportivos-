@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import com.example.demo.entity.Evento;
 import com.example.demo.service.EventoService;
 
@@ -49,11 +54,8 @@ public class EventoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Evento crear(@RequestBody EventoCreateRequest request) {
+    public Evento crear(@Valid @RequestBody EventoCreateRequest request) {
         String lugar = request.lugar();
-        if (request.fecha() == null || request.hora() == null || lugar == null || lugar.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar fecha, hora y lugar");
-        }
         int capacidad = request.capacidadMaxima() > 0 ? request.capacidadMaxima() : 20;
         String descripcion = request.descripcion() == null ? "" : request.descripcion().trim();
         return eventoService.crear(request.fecha(), request.hora(), lugar.trim(), descripcion, capacidad);
@@ -72,6 +74,11 @@ public class EventoController {
         return new CountResponse(eventoService.listar().size());
     }
 
-    public record EventoCreateRequest(LocalDate fecha, LocalTime hora, String lugar, String descripcion, int capacidadMaxima) {}
+        public record EventoCreateRequest(
+            @NotNull LocalDate fecha,
+            @NotNull LocalTime hora,
+            @NotBlank String lugar,
+            String descripcion,
+            @Positive int capacidadMaxima) {}
     public record CountResponse(int total) {}
 }

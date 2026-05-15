@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import com.example.demo.entity.Inscripcion;
 import com.example.demo.service.EventoService;
 import com.example.demo.service.InscripcionService;
@@ -56,7 +59,7 @@ public class InscripcionController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Inscripcion crear(@RequestBody InscripcionCreateRequest request) {
+    public Inscripcion crear(@Valid @RequestBody InscripcionCreateRequest request) {
         if (!eventoService.existe(request.eventoId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento no encontrado");
         }
@@ -91,6 +94,9 @@ public class InscripcionController {
         return new CountResponse(inscripcionService.listar().size());
     }
 
-    public record InscripcionCreateRequest(long eventoId, long participanteId, String equipo) {}
+        public record InscripcionCreateRequest(
+            @NotNull Long eventoId,
+            @NotNull Long participanteId,
+            String equipo) {}
     public record CountResponse(int total) {}
 }

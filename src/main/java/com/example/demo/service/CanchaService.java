@@ -1,43 +1,49 @@
 // service/CanchaService.java
 package com.example.demo.service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Cancha;
+import com.example.demo.repository.CanchaRepository;
 
 @Service
 public class CanchaService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Cancha> canchas = new ConcurrentHashMap<>();
+    private final CanchaRepository canchaRepository;
 
+    public CanchaService(CanchaRepository canchaRepository) {
+        this.canchaRepository = canchaRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Cancha> listar() {
-        return canchas.values().stream()
-                .sorted(Comparator.comparingLong(Cancha::id))
-                .toList();
+        return canchaRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
     }
 
+    @Transactional(readOnly = true)
     public Cancha obtener(long id) {
-        return canchas.get(id);
+        return canchaRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public boolean existe(long id) {
-        return canchas.containsKey(id);
+        return canchaRepository.existsById(id);
     }
 
+    @Transactional
     public Cancha crear(String nombre, String ubicacion, String tipo, double precioPorHora) {
-        long id = secuenciaId.getAndIncrement();
-        Cancha cancha = new Cancha(id, nombre, ubicacion, tipo, precioPorHora);
-        canchas.put(id, cancha);
-        return cancha;
+        Cancha cancha = new Cancha(nombre, ubicacion, tipo, precioPorHora);
+        return canchaRepository.save(cancha);
     }
 
+    @Transactional
     public boolean eliminar(long id) {
-        return canchas.remove(id) != null;
+        if (!canchaRepository.existsById(id)) {
+            return false;
+        }
+        canchaRepository.deleteById(id);
+        return true;
     }
 }

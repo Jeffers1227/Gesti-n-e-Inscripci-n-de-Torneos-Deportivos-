@@ -3,50 +3,54 @@ package com.example.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Evento;
+import com.example.demo.repository.EventoRepository;
 
 @Service
 public class EventoService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Evento> eventos = new ConcurrentHashMap<>();
+    private final EventoRepository eventoRepository;
 
+    public EventoService(EventoRepository eventoRepository) {
+        this.eventoRepository = eventoRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Evento> listar() {
-        return eventos.values().stream()
-                .sorted(Comparator.comparingLong(Evento::id))
-                .toList();
+        return eventoRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
     }
 
+    @Transactional(readOnly = true)
     public List<Evento> listarPorFecha(LocalDate fecha) {
-        return eventos.values().stream()
-                .filter(e -> e.fecha().equals(fecha))
-                .sorted(Comparator.comparing(Evento::hora))
-                .toList();
+        return eventoRepository.buscarPorFecha(fecha);
     }
 
+    @Transactional(readOnly = true)
     public Evento obtener(long id) {
-        return eventos.get(id);
+        return eventoRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public boolean existe(long id) {
-        return eventos.containsKey(id);
+        return eventoRepository.existsById(id);
     }
 
+    @Transactional
     public Evento crear(LocalDate fecha, LocalTime hora, String lugar, String descripcion, int capacidadMaxima) {
-        long id = secuenciaId.getAndIncrement();
-        Evento evento = new Evento(id, fecha, hora, lugar, descripcion, capacidadMaxima);
-        eventos.put(id, evento);
-        return evento;
+        Evento evento = new Evento(fecha, hora, lugar, descripcion, capacidadMaxima);
+        return eventoRepository.save(evento);
     }
 
+    @Transactional
     public boolean eliminar(long id) {
-        return eventos.remove(id) != null;
+        if (!eventoRepository.existsById(id)) {
+            return false;
+        }
+        eventoRepository.deleteById(id);
+        return true;
     }
 }

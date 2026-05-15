@@ -2,44 +2,49 @@
 package com.example.demo.service;
 
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.ContactoMensaje;
+import com.example.demo.repository.ContactoMensajeRepository;
 
 @Service
 public class ContactoService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, ContactoMensaje> mensajes = new ConcurrentHashMap<>();
     private static final String EMAIL_PRINCIPAL = "EventosPJos@gmail.com";
+    private final ContactoMensajeRepository contactoMensajeRepository;
+
+    public ContactoService(ContactoMensajeRepository contactoMensajeRepository) {
+        this.contactoMensajeRepository = contactoMensajeRepository;
+    }
 
     public String emailPrincipal() {
         return EMAIL_PRINCIPAL;
     }
 
+    @Transactional(readOnly = true)
     public List<ContactoMensaje> listarMensajes() {
-        return mensajes.values().stream()
-                .sorted(Comparator.comparing(ContactoMensaje::recibidoEn).reversed())
-                .toList();
+        return contactoMensajeRepository.listarRecientes();
     }
 
+    @Transactional(readOnly = true)
     public ContactoMensaje obtener(long id) {
-        return mensajes.get(id);
+        return contactoMensajeRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public ContactoMensaje registrar(String nombre, String correo, String asunto, String mensaje) {
-        long id = secuenciaId.getAndIncrement();
-        ContactoMensaje m = new ContactoMensaje(id, nombre, correo, asunto, mensaje, Instant.now());
-        mensajes.put(id, m);
-        return m;
+        ContactoMensaje m = new ContactoMensaje(nombre, correo, asunto, mensaje, Instant.now());
+        return contactoMensajeRepository.save(m);
     }
 
+    @Transactional
     public boolean eliminar(long id) {
-        return mensajes.remove(id) != null;
+        if (!contactoMensajeRepository.existsById(id)) {
+            return false;
+        }
+        contactoMensajeRepository.deleteById(id);
+        return true;
     }
 }

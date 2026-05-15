@@ -1,66 +1,83 @@
 package com.example.demo.service;
 
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Inscripcion;
+import com.example.demo.entity.Evento;
+import com.example.demo.entity.Participante;
+import com.example.demo.repository.InscripcionRepository;
+import com.example.demo.repository.EventoRepository;
+import com.example.demo.repository.ParticipanteRepository;
 
 @Service
 public class InscripcionService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Inscripcion> inscripciones = new ConcurrentHashMap<>();
+    private final InscripcionRepository inscripcionRepository;
+    private final EventoRepository eventoRepository;
+    private final ParticipanteRepository participanteRepository;
 
+    public InscripcionService(InscripcionRepository inscripcionRepository,
+                              EventoRepository eventoRepository,
+                              ParticipanteRepository participanteRepository) {
+        this.inscripcionRepository = inscripcionRepository;
+        this.eventoRepository = eventoRepository;
+        this.participanteRepository = participanteRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Inscripcion> listar() {
-        return inscripciones.values().stream()
-                .sorted(Comparator.comparingLong(Inscripcion::id))
-                .toList();
+        return inscripcionRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
     }
 
+    @Transactional(readOnly = true)
     public Inscripcion obtener(long id) {
-        return inscripciones.get(id);
+        return inscripcionRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public List<Inscripcion> listarPorEvento(long eventoId) {
-        return inscripciones.values().stream()
-                .filter(i -> i.eventoId() == eventoId)
-                .sorted(Comparator.comparing(Inscripcion::fechaInscripcion))
-                .toList();
+        return inscripcionRepository.buscarPorEvento(eventoId);
     }
 
+    @Transactional(readOnly = true)
     public List<Inscripcion> listarPorParticipante(long participanteId) {
-        return inscripciones.values().stream()
-                .filter(i -> i.participanteId() == participanteId)
-                .sorted(Comparator.comparing(Inscripcion::fechaInscripcion))
-                .toList();
+        return inscripcionRepository.buscarPorParticipante(participanteId);
     }
 
+    @Transactional(readOnly = true)
     public boolean yaInscrito(long eventoId, long participanteId) {
-        return inscripciones.values().stream()
-                .anyMatch(i -> i.eventoId() == eventoId && i.participanteId() == participanteId);
+        return inscripcionRepository.existeInscripcion(eventoId, participanteId);
     }
 
+    @Transactional
     public Inscripcion crear(long eventoId, long participanteId, String equipo) {
-        long id = secuenciaId.getAndIncrement();
+        Evento evento = eventoRepository.getReferenceById(eventoId);
+        Participante participante = participanteRepository.getReferenceById(participanteId);
         String equipoNormalizado = equipo == null || equipo.isBlank() ? null : equipo.trim();
-        Inscripcion inscripcion = new Inscripcion(id, eventoId, participanteId, equipoNormalizado, Instant.now(), "CONFIRMADA");
-        inscripciones.put(id, inscripcion);
-        return inscripcion;
+        Inscripcion inscripcion = new Inscripcion(evento, participante, equipoNormalizado, Instant.now(), "CONFIRMADA");
+        return inscripcionRepository.save(inscripcion);
     }
 
+    @Transactional
     public boolean cancelar(long id) {
-        Inscripcion i = inscripciones.get(id);
-        if (i == null) return false;
-        inscripciones.put(id, new Inscripcion(i.id(), i.eventoId(), i.participanteId(), i.equipo(), i.fechaInscripcion(), "CANCELADA"));
+        Inscripcion inscripcion = inscripcionRepository.findById(id).orElse(null);
+        if (inscripcion == null) {
+            return false;
+        }
+        inscripcion.setEstado("CANCELADA");
+        inscripcionRepository.save(inscripcion);
         return true;
     }
 
+    @Transactional
     public boolean eliminar(long id) {
-        return inscripciones.remove(id) != null;
+        if (!inscripcionRepository.existsById(id)) {
+            return false;
+        }
+        inscripcionRepository.deleteById(id);
+        return true;
     }
 }

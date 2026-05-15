@@ -29,25 +29,25 @@ public class DataSeeder {
             canchas.crear("Cancha VIP",   "Calle Las Flores 800",  "SINTETICO", 120.0);
 
             // Eventos
-            eventos.crear(LocalDate.of(2025, 7, 5),  LocalTime.of(9, 0),  "Cancha Norte", "Torneo apertura sub-18", 32);
-            eventos.crear(LocalDate.of(2025, 7, 12), LocalTime.of(10, 0), "Cancha Sur",   "Copa institucional",     24);
-            eventos.crear(LocalDate.of(2025, 7, 19), LocalTime.of(8, 30), "Cancha VIP",   "Clásico vecinal",        40);
+            var evento1 = eventos.crear(LocalDate.of(2025, 7, 5),  LocalTime.of(9, 0),  "Cancha Norte", "Torneo apertura sub-18", 32);
+            var evento2 = eventos.crear(LocalDate.of(2025, 7, 12), LocalTime.of(10, 0), "Cancha Sur",   "Copa institucional",     24);
+            var evento3 = eventos.crear(LocalDate.of(2025, 7, 19), LocalTime.of(8, 30), "Cancha VIP",   "Clásico vecinal",        40);
             eventos.crear(LocalDate.of(2025, 8, 2),  LocalTime.of(15, 0), "Cancha Norte", "Liga relámpago",         16);
 
             // Participantes
-            participantes.crear("Carlos Mendoza",  "carlos@correo.com",  "987001001", "SENIOR");
-            participantes.crear("Lucía Torres",    "lucia@correo.com",   "987001002", "JUNIOR");
-            participantes.crear("Miguel Ríos",     "miguel@correo.com",  "987001003", "SENIOR");
-            participantes.crear("Ana Gómez",       "ana@correo.com",     "987001004", "JUNIOR");
-            participantes.crear("Diego Paredes",   "diego@correo.com",   "987001005", "GENERAL");
+            var participante1 = participantes.crear("Carlos Mendoza",  "carlos@correo.com",  "987001001", "SENIOR");
+            var participante2 = participantes.crear("Lucía Torres",    "lucia@correo.com",   "987001002", "JUNIOR");
+            var participante3 = participantes.crear("Miguel Ríos",     "miguel@correo.com",  "987001003", "SENIOR");
+            var participante4 = participantes.crear("Ana Gómez",       "ana@correo.com",     "987001004", "JUNIOR");
+            var participante5 = participantes.crear("Diego Paredes",   "diego@correo.com",   "987001005", "GENERAL");
 
             // Inscripciones (eventoId, participanteId, equipo)
-            inscripciones.crear(1, 1, "Equipo A");
-            inscripciones.crear(1, 2, "Equipo A");
-            inscripciones.crear(2, 3, "Equipo B");
-            inscripciones.crear(2, 4, "Equipo B");
-            inscripciones.crear(3, 1, null);
-            inscripciones.crear(3, 5, null);
+            inscripciones.crear(evento1.getId(), participante1.getId(), "Equipo A");
+            inscripciones.crear(evento1.getId(), participante2.getId(), "Equipo A");
+            inscripciones.crear(evento2.getId(), participante3.getId(), "Equipo B");
+            inscripciones.crear(evento2.getId(), participante4.getId(), "Equipo B");
+            inscripciones.crear(evento3.getId(), participante1.getId(), null);
+            inscripciones.crear(evento3.getId(), participante5.getId(), null);
 
             // Mensajes de contacto
             contacto.registrar("Roberto Salinas", "roberto@mail.com", "Consulta horarios",

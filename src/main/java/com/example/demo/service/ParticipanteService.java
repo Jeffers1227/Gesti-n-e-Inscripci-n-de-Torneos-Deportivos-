@@ -1,48 +1,54 @@
 // service/ParticipanteService.java
 package com.example.demo.service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Participante;
+import com.example.demo.repository.ParticipanteRepository;
 
 @Service
 public class ParticipanteService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Participante> participantes = new ConcurrentHashMap<>();
+    private final ParticipanteRepository participanteRepository;
 
+    public ParticipanteService(ParticipanteRepository participanteRepository) {
+        this.participanteRepository = participanteRepository;
+    }
+
+    @Transactional(readOnly = true)
     public List<Participante> listar() {
-        return participantes.values().stream()
-                .sorted(Comparator.comparingLong(Participante::id))
-                .toList();
+        return participanteRepository.findAll(org.springframework.data.domain.Sort.by("id").ascending());
     }
 
+    @Transactional(readOnly = true)
     public Participante obtener(long id) {
-        return participantes.get(id);
+        return participanteRepository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
     public boolean existe(long id) {
-        return participantes.containsKey(id);
+        return participanteRepository.existsById(id);
     }
 
+    @Transactional(readOnly = true)
     public boolean correoEnUso(String correo) {
-        return participantes.values().stream()
-                .anyMatch(p -> p.correo().equalsIgnoreCase(correo));
+        return participanteRepository.existsByCorreoIgnoreCase(correo);
     }
 
+    @Transactional
     public Participante crear(String nombre, String correo, String telefono, String categoria) {
-        long id = secuenciaId.getAndIncrement();
-        Participante participante = new Participante(id, nombre, correo, telefono, categoria);
-        participantes.put(id, participante);
-        return participante;
+        Participante participante = new Participante(nombre, correo, telefono, categoria);
+        return participanteRepository.save(participante);
     }
 
+    @Transactional
     public boolean eliminar(long id) {
-        return participantes.remove(id) != null;
+        if (!participanteRepository.existsById(id)) {
+            return false;
+        }
+        participanteRepository.deleteById(id);
+        return true;
     }
 }
