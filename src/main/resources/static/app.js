@@ -1,6 +1,6 @@
 // Gestor de Torneos Deportivos - Lógica de aplicación
 
-const API_URL = "http://localhost:8090";
+const API_URL = "http://localhost:8060";
 
 // ============ FUNCIONES GENERALES ============
 function switchTab(tabName) {
@@ -37,7 +37,8 @@ async function crearEvento(e) {
     hora: document.getElementById("eventoHora").value,
     lugar: document.getElementById("eventoUbicacion").value,
     descripcion: document.getElementById("eventoDescripcion").value,
-    capacidadMaxima: parseInt(document.getElementById("eventoCapacidad").value) || 20,
+    capacidadMaxima:
+      parseInt(document.getElementById("eventoCapacidad").value) || 20,
   };
 
   try {
@@ -58,7 +59,7 @@ async function crearEvento(e) {
     showMessage(
       "eventoMessage",
       "Error de conexión: " + error.message,
-      "error"
+      "error",
     );
   }
 }
@@ -132,7 +133,11 @@ async function eliminarEvento(id) {
 
       if (response.ok) {
         listarEventos();
-        showMessage("eventoMessage", "Evento eliminado exitosamente", "success");
+        showMessage(
+          "eventoMessage",
+          "Evento eliminado exitosamente",
+          "success",
+        );
       } else {
         alert("Error al eliminar el evento");
       }
@@ -149,7 +154,8 @@ async function crearParticipante(e) {
     nombre: document.getElementById("participanteNombre").value,
     correo: document.getElementById("participanteEmail").value,
     telefono: document.getElementById("participanteTelefono").value,
-    categoria: document.getElementById("participanteCategoria").value || "GENERAL",
+    categoria:
+      document.getElementById("participanteCategoria").value || "GENERAL",
   };
 
   try {
@@ -163,7 +169,7 @@ async function crearParticipante(e) {
       showMessage(
         "participanteMessage",
         "Participante creado exitosamente",
-        "success"
+        "success",
       );
       document.querySelector("#participantes form").reset();
       listarParticipantes();
@@ -171,14 +177,14 @@ async function crearParticipante(e) {
       showMessage(
         "participanteMessage",
         "Error al crear el participante",
-        "error"
+        "error",
       );
     }
   } catch (error) {
     showMessage(
       "participanteMessage",
       "Error de conexión: " + error.message,
-      "error"
+      "error",
     );
   }
 }
@@ -211,9 +217,7 @@ async function listarParticipantes() {
 }
 
 async function eliminarParticipante(id) {
-  if (
-    confirm("¿Estás seguro de que deseas eliminar este participante?")
-  ) {
+  if (confirm("¿Estás seguro de que deseas eliminar este participante?")) {
     try {
       const response = await fetch(`${API_URL}/participantes/${id}`, {
         method: "DELETE",
@@ -221,7 +225,11 @@ async function eliminarParticipante(id) {
 
       if (response.ok) {
         listarParticipantes();
-        showMessage("participanteMessage", "Participante eliminado exitosamente", "success");
+        showMessage(
+          "participanteMessage",
+          "Participante eliminado exitosamente",
+          "success",
+        );
       } else {
         alert("Error al eliminar el participante");
       }
@@ -251,7 +259,7 @@ async function crearInscripcion(e) {
       showMessage(
         "inscripcionMessage",
         "Inscripción creada exitosamente",
-        "success"
+        "success",
       );
       document.querySelector("#inscripciones form").reset();
       listarInscripciones();
@@ -259,14 +267,14 @@ async function crearInscripcion(e) {
       showMessage(
         "inscripcionMessage",
         "Error al crear la inscripción",
-        "error"
+        "error",
       );
     }
   } catch (error) {
     showMessage(
       "inscripcionMessage",
       "Error de conexión: " + error.message,
-      "error"
+      "error",
     );
   }
 }
@@ -307,7 +315,11 @@ async function eliminarInscripcion(id) {
 
       if (response.ok) {
         listarInscripciones();
-        showMessage("inscripcionMessage", "Inscripción eliminada exitosamente", "success");
+        showMessage(
+          "inscripcionMessage",
+          "Inscripción eliminada exitosamente",
+          "success",
+        );
       } else {
         alert("Error al eliminar la inscripción");
       }
@@ -345,7 +357,7 @@ async function crearCancha(e) {
     showMessage(
       "chanchaMessage",
       "Error de conexión: " + error.message,
-      "error"
+      "error",
     );
   }
 }
@@ -386,7 +398,11 @@ async function eliminarCancha(id) {
 
       if (response.ok) {
         listarCanchas();
-        showMessage("chanchaMessage", "Cancha eliminada exitosamente", "success");
+        showMessage(
+          "chanchaMessage",
+          "Cancha eliminada exitosamente",
+          "success",
+        );
       } else {
         alert("Error al eliminar la cancha");
       }
@@ -424,7 +440,7 @@ async function enviarContacto(e) {
     showMessage(
       "contactoMessage",
       "Error de conexión: " + error.message,
-      "error"
+      "error",
     );
   }
 }
@@ -466,7 +482,11 @@ async function eliminarContacto(id) {
 
       if (response.ok) {
         listarContactos();
-        showMessage("contactoMessage", "Mensaje eliminado exitosamente", "success");
+        showMessage(
+          "contactoMessage",
+          "Mensaje eliminado exitosamente",
+          "success",
+        );
       } else {
         alert("Error al eliminar el mensaje");
       }
