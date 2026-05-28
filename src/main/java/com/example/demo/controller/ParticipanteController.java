@@ -1,7 +1,9 @@
-// controller/ParticipanteController.java
 package com.example.demo.controller;
-
 import java.util.List;
+
+import jakarta.validation.Valid; // IMPORTANTE: Para las validaciones del Laboratorio S08/10
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import com.example.demo.service.ParticipanteService;
 @RestController
 @RequestMapping("/participantes")
 public class ParticipanteController {
+    
     private final ParticipanteService participanteService;
     private final InscripcionService inscripcionService;
 
@@ -35,11 +38,11 @@ public class ParticipanteController {
         return participanteService.listar();
     }
 
+    // SOLUCIÓN AL ERROR: Desenvolvemos el Optional de forma segura
     @GetMapping("/{id}")
     public Participante obtener(@PathVariable long id) {
-        Participante p = participanteService.obtener(id);
-        if (p == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Participante no encontrado");
-        return p;
+        return participanteService.obtener(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Participante no encontrado"));
     }
 
     @GetMapping("/{id}/inscripciones")
@@ -50,20 +53,18 @@ public class ParticipanteController {
         return inscripcionService.listarPorParticipante(id);
     }
 
+    // APLICACIÓN DEL LABORATORIO S08/10: Uso de @Valid para evitar if() manuales
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Participante crear(@RequestBody ParticipanteCreateRequest request) {
-        String nombre = request.nombre();
-        String correo = request.correo();
-        if (nombre == null || nombre.isBlank() || correo == null || correo.isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre y correo");
-        }
-        if (participanteService.correoEnUso(correo.trim())) {
+    public Participante crear(@Valid @RequestBody ParticipanteCreateRequest request) {
+        
+        // Solo dejamos la validación de negocio (correo duplicado)
+        if (participanteService.correoEnUso(request.correo().trim())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El correo ya está registrado");
         }
-        String telefono = request.telefono() == null ? "" : request.telefono().trim();
+        
         String categoria = request.categoria() == null ? "GENERAL" : request.categoria().trim().toUpperCase();
-        return participanteService.crear(nombre.trim(), correo.trim(), telefono, categoria);
+        return participanteService.crear(request.nombre().trim(), request.correo().trim(), request.telefono().trim(), categoria);
     }
 
     @DeleteMapping("/{id}")
@@ -79,6 +80,20 @@ public class ParticipanteController {
         return new CountResponse(participanteService.listar().size());
     }
 
-    public record ParticipanteCreateRequest(String nombre, String correo, String telefono, String categoria) {}
+    // DTO CON VALIDACIONES INTEGRADAS
+    public record ParticipanteCreateRequest(
+        @NotBlank(message = "Debe indicar nombre") 
+        String nombre, 
+        
+        @NotBlank(message = "Debe indicar correo") 
+        @Email(message = "Formato de correo inválido") 
+        String correo, 
+        
+        @NotBlank(message = "Debe indicar teléfono") 
+        String telefono, 
+        
+        String categoria
+    ) {}
+    
     public record CountResponse(int total) {}
 }

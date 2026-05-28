@@ -1,48 +1,53 @@
-// service/ParticipanteService.java
 package com.example.demo.service;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Participante;
+import com.example.demo.repository.ParticipanteRepository;
 
 @Service
 public class ParticipanteService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Participante> participantes = new ConcurrentHashMap<>();
+    
+    // Inyectamos el repositorio que conecta con la BD
+    private final ParticipanteRepository repository;
 
-    public List<Participante> listar() {
-        return participantes.values().stream()
-                .sorted(Comparator.comparingLong(Participante::id))
-                .toList();
+    public ParticipanteService(ParticipanteRepository repository) {
+        this.repository = repository;
     }
 
-    public Participante obtener(long id) {
-        return participantes.get(id);
+    public List<Participante> listar() {
+        return repository.findAll(); // Busca todos en la BD
+    }
+
+    public Optional<Participante> obtener(long id) {
+        return repository.findById(id); // Busca por ID en la BD
     }
 
     public boolean existe(long id) {
-        return participantes.containsKey(id);
+        return repository.existsById(id);
     }
 
     public boolean correoEnUso(String correo) {
-        return participantes.values().stream()
-                .anyMatch(p -> p.correo().equalsIgnoreCase(correo));
+        return repository.existsByCorreoIgnoreCase(correo); // Usa la consulta que creamos
     }
 
+    @Transactional // Del Laboratorio 07: Protege la transacción en la BD
     public Participante crear(String nombre, String correo, String telefono, String categoria) {
-        long id = secuenciaId.getAndIncrement();
-        Participante participante = new Participante(id, nombre, correo, telefono, categoria);
-        participantes.put(id, participante);
-        return participante;
+        // Ya no le pasamos el ID, MySQL lo asignará automáticamente
+        Participante participante = new Participante(nombre, correo, telefono, categoria);
+        return repository.save(participante); // Lo guarda en MySQL
     }
 
+    @Transactional // Del Laboratorio 07: Protege la transacción en la BD
     public boolean eliminar(long id) {
-        return participantes.remove(id) != null;
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
