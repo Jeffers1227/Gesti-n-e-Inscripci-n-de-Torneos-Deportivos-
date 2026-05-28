@@ -13,6 +13,10 @@ body {
   padding: 20px;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -231,10 +235,29 @@ table tr:hover {
   background: #f8f9fa;
 }
 
-.delete-btn {
-  background: #dc3545;
+.edit-btn {
+  background: #007bff;
+  color: white;
   padding: 5px 10px;
   font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.edit-btn:hover {
+  background: #0056b3;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .delete-btn:hover {

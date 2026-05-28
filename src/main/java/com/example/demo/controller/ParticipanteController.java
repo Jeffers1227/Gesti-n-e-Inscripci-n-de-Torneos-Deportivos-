@@ -1,15 +1,12 @@
 package com.example.demo.controller;
 import java.util.List;
 
-import jakarta.validation.Valid; // IMPORTANTE: Para las validaciones del Laboratorio S08/10
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus; // IMPORTANTE: Para las validaciones del Laboratorio S08/10
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +17,10 @@ import com.example.demo.entity.Inscripcion;
 import com.example.demo.entity.Participante;
 import com.example.demo.service.InscripcionService;
 import com.example.demo.service.ParticipanteService;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/participantes")
@@ -67,6 +68,18 @@ public class ParticipanteController {
         return participanteService.crear(request.nombre().trim(), request.correo().trim(), request.telefono().trim(), categoria);
     }
 
+    @PutMapping("/{id}")
+    public Participante actualizar(@PathVariable long id, @Valid @RequestBody ParticipanteUpdateRequest request) {
+        if (!participanteService.existe(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Participante no encontrado");
+        }
+        if (participanteService.correoEnUsoParaOtro(request.correo().trim(), id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El correo ya está registrado por otro participante");
+        }
+        String categoria = request.categoria() == null ? "GENERAL" : request.categoria().trim().toUpperCase();
+        return participanteService.actualizar(id, request.nombre().trim(), request.correo().trim(), request.telefono().trim(), categoria);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable long id) {
@@ -82,6 +95,20 @@ public class ParticipanteController {
 
     // DTO CON VALIDACIONES INTEGRADAS
     public record ParticipanteCreateRequest(
+        @NotBlank(message = "Debe indicar nombre") 
+        String nombre, 
+        
+        @NotBlank(message = "Debe indicar correo") 
+        @Email(message = "Formato de correo inválido") 
+        String correo, 
+        
+        @NotBlank(message = "Debe indicar teléfono") 
+        String telefono, 
+        
+        String categoria
+    ) {}
+
+    public record ParticipanteUpdateRequest(
         @NotBlank(message = "Debe indicar nombre") 
         String nombre, 
         

@@ -2,20 +2,22 @@
 package com.example.demo.service;
 
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.ContactoMensaje;
+import com.example.demo.repository.ContactoMensajeRepository;
 
 @Service
+@Transactional
 public class ContactoService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, ContactoMensaje> mensajes = new ConcurrentHashMap<>();
+
+    @Autowired
+    private ContactoMensajeRepository contactoRepository;
+
     private static final String EMAIL_PRINCIPAL = "EventosPJos@gmail.com";
 
     public String emailPrincipal() {
@@ -23,23 +25,24 @@ public class ContactoService {
     }
 
     public List<ContactoMensaje> listarMensajes() {
-        return mensajes.values().stream()
-                .sorted(Comparator.comparing(ContactoMensaje::recibidoEn).reversed())
-                .toList();
+        return contactoRepository.findAll();
     }
 
     public ContactoMensaje obtener(long id) {
-        return mensajes.get(id);
+        return contactoRepository.findById((long) id).orElse(null);
     }
 
     public ContactoMensaje registrar(String nombre, String correo, String asunto, String mensaje) {
-        long id = secuenciaId.getAndIncrement();
-        ContactoMensaje m = new ContactoMensaje(id, nombre, correo, asunto, mensaje, Instant.now());
-        mensajes.put(id, m);
-        return m;
+        ContactoMensaje m = new ContactoMensaje(nombre, correo, asunto, mensaje, Instant.now());
+        return contactoRepository.save(m);
     }
 
     public boolean eliminar(long id) {
-        return mensajes.remove(id) != null;
+        if (contactoRepository.existsById((long) id)) {
+            contactoRepository.deleteById((long) id);
+            return true;
+        }
+        return false;
     }
 }
+

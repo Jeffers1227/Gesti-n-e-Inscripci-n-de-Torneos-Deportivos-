@@ -3,50 +3,61 @@ package com.example.demo.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.Evento;
+import com.example.demo.repository.EventoRepository;
 
 @Service
+@Transactional
 public class EventoService {
-    private final AtomicLong secuenciaId = new AtomicLong(1);
-    private final ConcurrentMap<Long, Evento> eventos = new ConcurrentHashMap<>();
+
+    @Autowired
+    private EventoRepository eventoRepository;
 
     public List<Evento> listar() {
-        return eventos.values().stream()
-                .sorted(Comparator.comparingLong(Evento::id))
-                .toList();
+        return eventoRepository.findAll();
     }
 
     public List<Evento> listarPorFecha(LocalDate fecha) {
-        return eventos.values().stream()
-                .filter(e -> e.fecha().equals(fecha))
-                .sorted(Comparator.comparing(Evento::hora))
-                .toList();
+        return eventoRepository.findByFecha(fecha);
     }
 
     public Evento obtener(long id) {
-        return eventos.get(id);
+        return eventoRepository.findById((long) id).orElse(null);
     }
 
     public boolean existe(long id) {
-        return eventos.containsKey(id);
+        return eventoRepository.existsById((long) id);
     }
 
     public Evento crear(LocalDate fecha, LocalTime hora, String lugar, String descripcion, int capacidadMaxima) {
-        long id = secuenciaId.getAndIncrement();
-        Evento evento = new Evento(id, fecha, hora, lugar, descripcion, capacidadMaxima);
-        eventos.put(id, evento);
-        return evento;
+        Evento evento = new Evento(fecha, hora, lugar, descripcion, capacidadMaxima);
+        return eventoRepository.save(evento);
+    }
+
+    public Evento actualizar(long id, LocalDate fecha, LocalTime hora, String lugar, String descripcion, int capacidadMaxima) {
+        Evento evento = eventoRepository.findById((long) id).orElse(null);
+        if (evento != null) {
+            evento.setFecha(fecha);
+            evento.setHora(hora);
+            evento.setLugar(lugar);
+            evento.setDescripcion(descripcion);
+            evento.setCapacidadMaxima(capacidadMaxima);
+            return eventoRepository.save(evento);
+        }
+        return null;
     }
 
     public boolean eliminar(long id) {
-        return eventos.remove(id) != null;
+        if (eventoRepository.existsById((long) id)) {
+            eventoRepository.deleteById((long) id);
+            return true;
+        }
+        return false;
     }
 }

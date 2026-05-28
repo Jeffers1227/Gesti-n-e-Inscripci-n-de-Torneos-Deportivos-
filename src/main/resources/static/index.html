@@ -35,7 +35,7 @@
 
       <!-- PESTAÑA DE EVENTOS -->
       <div id="eventos" class="tab-content active">
-        <div class="section">
+        <div id="eventoCreateSection" class="section">
           <h2>Crear Evento</h2>
           <form onsubmit="crearEvento(event)">
             <div class="form-row">
@@ -74,6 +74,41 @@
           <div id="eventoMessage"></div>
         </div>
 
+        <div id="eventoUpdateSection" class="section hidden">
+          <h2>Actualizar Evento</h2>
+          <form onsubmit="actualizarEvento(event)">
+            <div class="form-group">
+              <label>ID del Evento:</label>
+              <input type="number" id="eventoActualizarId" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fecha:</label>
+                <input type="date" id="eventoActualizarFecha" required />
+              </div>
+              <div class="form-group">
+                <label>Hora:</label>
+                <input type="time" id="eventoActualizarHora" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Ubicación:</label>
+              <input type="text" id="eventoActualizarUbicacion" required />
+            </div>
+            <div class="form-group">
+              <label>Descripción:</label>
+              <input type="text" id="eventoActualizarDescripcion" />
+            </div>
+            <div class="form-group">
+              <label>Capacidad Máxima:</label>
+              <input type="number" id="eventoActualizarCapacidad" min="1" />
+            </div>
+            <button type="submit">Actualizar Evento</button>
+            <button type="button" onclick="cancelarActualizacionEvento()">Cancelar</button>
+          </form>
+          <div id="eventoUpdateMessage"></div>
+        </div>
+
         <div class="section">
           <h2>Listar Eventos</h2>
           <button onclick="listarEventos()">Obtener Todos los Eventos</button>
@@ -93,7 +128,7 @@
 
       <!-- PESTAÑA DE PARTICIPANTES -->
       <div id="participantes" class="tab-content">
-        <div class="section">
+        <div id="participanteCreateSection" class="section">
           <h2>Crear Participante</h2>
           <form onsubmit="crearParticipante(event)">
             <div class="form-group">
@@ -119,6 +154,39 @@
             <button type="submit">Crear Participante</button>
           </form>
           <div id="participanteMessage"></div>
+        </div>
+
+        <div id="participanteUpdateSection" class="section hidden">
+          <h2>Actualizar Participante</h2>
+          <form onsubmit="actualizarParticipante(event)">
+            <div class="form-group">
+              <label>ID del Participante:</label>
+              <input type="number" id="participanteActualizarId" required />
+            </div>
+            <div class="form-group">
+              <label>Nombre:</label>
+              <input type="text" id="participanteActualizarNombre" required />
+            </div>
+            <div class="form-group">
+              <label>Email:</label>
+              <input type="text" id="participanteActualizarEmail" required />
+            </div>
+            <div class="form-group">
+              <label>Teléfono:</label>
+              <input type="text" id="participanteActualizarTelefono" required />
+            </div>
+            <div class="form-group">
+              <label>Categoría:</label>
+              <select id="participanteActualizarCategoria">
+                <option value="GENERAL">General</option>
+                <option value="JUNIOR">Junior</option>
+                <option value="SENIOR">Senior</option>
+              </select>
+            </div>
+            <button type="submit">Actualizar Participante</button>
+            <button type="button" onclick="cancelarActualizacionParticipante()">Cancelar</button>
+          </form>
+          <div id="participanteUpdateMessage"></div>
         </div>
 
         <div class="section">
@@ -163,7 +231,7 @@
 
       <!-- PESTAÑA DE CANCHAS -->
       <div id="canchas" class="tab-content">
-        <div class="section">
+        <div id="canchaCreateSection" class="section">
           <h2>Crear Cancha</h2>
           <form onsubmit="crearCancha(event)">
             <div class="form-group">
@@ -181,6 +249,35 @@
             <button type="submit">Crear Cancha</button>
           </form>
           <div id="chanchaMessage"></div>
+        </div>
+
+        <div id="canchaUpdateSection" class="section hidden">
+          <h2>Actualizar Cancha</h2>
+          <form onsubmit="actualizarCancha(event)">
+            <div class="form-group">
+              <label>ID de la Cancha:</label>
+              <input type="number" id="canchaActualizarId" required />
+            </div>
+            <div class="form-group">
+              <label>Nombre:</label>
+              <input type="text" id="canchaActualizarNombre" required />
+            </div>
+            <div class="form-group">
+              <label>Ubicación:</label>
+              <input type="text" id="canchaActualizarUbicacion" required />
+            </div>
+            <div class="form-group">
+              <label>Tipo de Superficie:</label>
+              <input type="text" id="canchaActualizarSuperficie" />
+            </div>
+            <div class="form-group">
+              <label>Precio por Hora:</label>
+              <input type="number" id="canchaActualizarPrecio" step="0.01" min="0" />
+            </div>
+            <button type="submit">Actualizar Cancha</button>
+            <button type="button" onclick="cancelarActualizacionCancha()">Cancelar</button>
+          </form>
+          <div id="canchaUpdateMessage"></div>
         </div>
 
         <div class="section">

@@ -35,11 +35,32 @@ public class ParticipanteService {
         return repository.existsByCorreoIgnoreCase(correo); // Usa la consulta que creamos
     }
 
+    public boolean correoEnUsoParaOtro(String correo, long idExcluir) {
+        Optional<Participante> existente = repository.findAll().stream()
+                .filter(p -> p.getCorreo().equalsIgnoreCase(correo) && p.getId() != idExcluir)
+                .findFirst();
+        return existente.isPresent();
+    }
+
     @Transactional // Del Laboratorio 07: Protege la transacción en la BD
     public Participante crear(String nombre, String correo, String telefono, String categoria) {
         // Ya no le pasamos el ID, MySQL lo asignará automáticamente
         Participante participante = new Participante(nombre, correo, telefono, categoria);
         return repository.save(participante); // Lo guarda en MySQL
+    }
+
+    @Transactional // Del Laboratorio 07: Protege la transacción en la BD
+    public Participante actualizar(long id, String nombre, String correo, String telefono, String categoria) {
+        Optional<Participante> existente = repository.findById(id);
+        if (existente.isPresent()) {
+            Participante participante = existente.get();
+            participante.setNombre(nombre);
+            participante.setCorreo(correo);
+            participante.setTelefono(telefono);
+            participante.setCategoria(categoria);
+            return repository.save(participante);
+        }
+        return null;
     }
 
     @Transactional // Del Laboratorio 07: Protege la transacción en la BD

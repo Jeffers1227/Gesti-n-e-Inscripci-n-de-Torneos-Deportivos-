@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -56,6 +57,23 @@ public class CanchaController {
         return canchaService.crear(nombre.trim(), ubicacion.trim(), tipoFinal, request.precioPorHora());
     }
 
+    @PutMapping("/{id}")
+    public Cancha actualizar(@PathVariable long id, @RequestBody CanchaUpdateRequest request) {
+        if (!canchaService.existe(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cancha no encontrada");
+        }
+        String nombre = request.nombre();
+        String ubicacion = request.ubicacion();
+        if (nombre == null || nombre.isBlank() || ubicacion == null || ubicacion.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Debe indicar nombre y ubicación");
+        }
+        if (request.precioPorHora() < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El precio no puede ser negativo");
+        }
+        String tipo = (request.tipo() == null || request.tipo().isBlank()) ? "STANDARD" : request.tipo().trim().toUpperCase();
+        return canchaService.actualizar(id, nombre.trim(), ubicacion.trim(), tipo, request.precioPorHora());
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable long id) {
@@ -70,5 +88,6 @@ public class CanchaController {
     }
 
     public record CanchaCreateRequest(String nombre, String ubicacion, String tipo, double precioPorHora) {}
+    public record CanchaUpdateRequest(String nombre, String ubicacion, String tipo, double precioPorHora) {}
     public record CountResponse(int total) {}
 }

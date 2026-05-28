@@ -60,7 +60,7 @@ public class ContactoController {
         ContactoMensaje registrado = contactoService.registrar(
                 nombre.trim(), correo.trim(), asunto.trim(), mensaje.trim());
 
-        return new ContactoRecibido(registrado.id(), contactoService.emailPrincipal(), "RECIBIDO");
+        return new ContactoRecibido(registrado.getId(), contactoService.emailPrincipal(), "RECIBIDO");
     }
 
     @GetMapping("/mensajes/count")
