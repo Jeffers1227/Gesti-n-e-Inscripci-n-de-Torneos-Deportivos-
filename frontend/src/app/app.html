@@ -1,0 +1,34 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">🏆</span>
+      <div>
+        <h2>Gestor</h2>
+        <p>Torneos deportivos</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Panel</a>
+      <a routerLink="/eventos" routerLinkActive="active">Eventos</a>
+      <a routerLink="/participantes" routerLinkActive="active">Participantes</a>
+      <a routerLink="/inscripciones" routerLinkActive="active">Inscripciones</a>
+      <a routerLink="/canchas" routerLinkActive="active">Canchas</a>
+      <a routerLink="/contactos" routerLinkActive="active">Contactos</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div>
+        <h1>Administración</h1>
+        <p>Frontend Angular conectado al backend en 8090.</p>
+      </div>
+      <span class="badge">API: http://localhost:8090</span>
+    </header>
+
+    <section class="content">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</div>
