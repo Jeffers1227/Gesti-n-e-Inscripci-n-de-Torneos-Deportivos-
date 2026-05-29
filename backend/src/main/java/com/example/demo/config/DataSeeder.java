@@ -7,12 +7,16 @@ import java.time.LocalTime;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.service.CanchaService;
 import com.example.demo.service.ContactoService;
 import com.example.demo.service.EventoService;
 import com.example.demo.service.InscripcionService;
 import com.example.demo.service.ParticipanteService;
+import com.example.demo.entity.Rol;
+import com.example.demo.entity.Usuario;
+import com.example.demo.repository.UsuarioRepository;
 
 @Configuration 
 public class DataSeeder {
@@ -22,8 +26,20 @@ public class DataSeeder {
     ApplicationRunner seed(CanchaService canchas, EventoService eventos,
                            ParticipanteService participantes,
                            InscripcionService inscripciones,
-                           ContactoService contacto) {
+                           ContactoService contacto,
+                           UsuarioRepository usuarios,
+                           PasswordEncoder passwordEncoder) {
         return args -> {
+
+            if (!usuarios.existsByEmail("admin@demo.com")) {
+                Usuario admin = new Usuario(
+                        "Administrador",
+                        "admin@demo.com",
+                        passwordEncoder.encode("Admin123"),
+                        Rol.ADMIN
+                );
+                usuarios.save(admin);
+            }
             
             if (participantes.listar().isEmpty()) {
                 

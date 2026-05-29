@@ -1,4 +1,4 @@
-<div class="app-shell">
+<div class="app-shell" *ngIf="auth.isAuthenticated(); else authOutlet">
   <aside class="sidebar">
     <div class="brand">
       <span class="brand-mark">🏆</span>
@@ -24,7 +24,10 @@
         <h1>Administración</h1>
         <p>Frontend Angular conectado al backend en 8090.</p>
       </div>
-      <span class="badge">API: http://localhost:8090</span>
+      <div class="topbar-actions">
+        <span class="badge">API: http://localhost:8090</span>
+        <button class="btn btn-secondary" type="button" (click)="logout()">Salir</button>
+      </div>
     </header>
 
     <section class="content">
@@ -32,3 +35,7 @@
     </section>
   </div>
 </div>
+
+<ng-template #authOutlet>
+  <router-outlet></router-outlet>
+</ng-template>

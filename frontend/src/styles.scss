@@ -65,6 +65,122 @@ p {
 	border-color: #c7d2fe;
 }
 
+.app-shell {
+	display: grid;
+	grid-template-columns: 260px 1fr;
+	min-height: 100vh;
+}
+
+.sidebar {
+	background: #0f172a;
+	color: #e2e8f0;
+	padding: 24px;
+}
+
+.brand {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 24px;
+}
+
+.brand-mark {
+	font-size: 28px;
+}
+
+.brand h2 {
+	color: #f8fafc;
+}
+
+.brand p {
+	color: #94a3b8;
+	font-size: 12px;
+}
+
+.nav {
+	display: grid;
+	gap: 10px;
+}
+
+.nav a {
+	color: #e2e8f0;
+	text-decoration: none;
+	padding: 10px 12px;
+	border-radius: 10px;
+	transition: background 0.2s ease;
+}
+
+.nav a.active,
+.nav a:hover {
+	background: rgba(148, 163, 184, 0.2);
+}
+
+.main {
+	padding: 24px 32px;
+}
+
+.topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 24px;
+}
+
+.topbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.badge {
+	background: #e0f2fe;
+	color: #0369a1;
+	padding: 6px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+}
+
+.content {
+	display: grid;
+	gap: 24px;
+}
+
+.auth-shell {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: linear-gradient(135deg, #1d4ed8, #0f172a);
+}
+
+.auth-card {
+	width: min(420px, 100%);
+	background: #fff;
+	padding: 28px;
+	border-radius: 20px;
+	box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+}
+
+.auth-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+	.app-shell {
+		grid-template-columns: 1fr;
+	}
+
+	.sidebar {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+	}
+}
+
 .form {
 	display: grid;
 	gap: 14px;
