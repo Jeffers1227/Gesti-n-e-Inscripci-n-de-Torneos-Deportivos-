@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventosService } from '../../core/services/eventos.service';
 import { Evento } from '../../core/models/evento.model';
+// IMPORTAMOS TU NUEVO COMPONENTE HIJO
+import { EventoFilaComponent } from './evento-fila.component';
 
 @Component({
   selector: 'app-eventos-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  // AÑADIMOS EL COMPONENTE HIJO A LOS IMPORTS
+  imports: [CommonModule, ReactiveFormsModule, EventoFilaComponent],
   template: `
     <div class="page">
       <div class="page-header">
@@ -85,9 +88,11 @@ import { Evento } from '../../core/models/evento.model';
             <span>Acciones</span>
           </div>
           <div class="table-row" *ngFor="let evento of eventos">
-            <span>#{{ evento.id }}</span>
-            <span>{{ evento.descripcion || 'Evento' }}</span>
-            <span>{{ evento.fecha }}</span>
+            <span [ngClass]="{'vip-row': evento.id === 1}">#{{ evento.id }}</span>
+            
+            <span>{{ (evento.descripcion || 'Evento') | uppercase }}</span>
+            <span>{{ evento.fecha | date:'dd/MM/yyyy' }}</span>
+            
             <span>{{ evento.hora }}</span>
             <span>{{ evento.lugar }}</span>
             <span class="table-actions">
@@ -109,28 +114,36 @@ import { Evento } from '../../core/models/evento.model';
           </label>
           <button class="btn" type="submit" [disabled]="searchForm.invalid">Buscar</button>
         </form>
+        
         <div class="table" *ngIf="searchResults.length; else emptySearch">
           <div class="table-row header">
             <span>ID</span>
             <span>Descripción</span>
             <span>Fecha</span>
-            <span>Hora</span>
-            <span>Ubicación</span>
+            <span>Acciones</span>
           </div>
-          <div class="table-row" *ngFor="let evento of searchResults">
-            <span>#{{ evento.id }}</span>
-            <span>{{ evento.descripcion || 'Evento' }}</span>
-            <span>{{ evento.fecha }}</span>
-            <span>{{ evento.hora }}</span>
-            <span>{{ evento.lugar }}</span>
+          
+          <div *ngFor="let evento of searchResults">
+            <app-evento-fila 
+              [eventoData]="evento" 
+              (eventoSeleccionado)="eliminarDesdeHijo($event)">
+            </app-evento-fila>
           </div>
+          
         </div>
         <ng-template #emptySearch>
           <p class="empty">Selecciona una fecha para buscar.</p>
         </ng-template>
       </section>
     </div>
-  `
+  `,
+  // Añadimos unos estilos rápidos para que se note la directiva ngClass
+  styles: [`
+    .vip-row {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+  `]
 })
 export class EventosPage implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -233,5 +246,12 @@ export class EventosPage implements OnInit {
       next: (result) => (this.searchResults = result),
       error: () => (this.searchResults = [])
     });
+  }
+
+  // MÉTODO NUEVO PARA RECIBIR LA ALERTA DEL HIJO
+  eliminarDesdeHijo(id: number): void {
+    this.remove(id);
+    // Limpiamos la búsqueda después de eliminar
+    this.searchResults = this.searchResults.filter(e => e.id !== id);
   }
 }
