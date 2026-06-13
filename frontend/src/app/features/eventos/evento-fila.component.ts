@@ -7,25 +7,32 @@ import { Evento } from '../../core/models/evento.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="table-row" style="background-color: #f9f9f9; border-left: 4px solid #007bff;">
-      <span>#{{ eventoData.id }}</span>
-      <span>{{ eventoData.descripcion | uppercase }}</span>
-      <span>{{ eventoData.fecha | date:'shortDate' }}</span>
-      <span>
-        <button class="btn-link danger" (click)="avisarAlPadre()">Seleccionar</button>
-      </span>
+    <div class="event-card search-card">
+      <div class="card-header">
+        <span class="badge search-badge">Resultado</span>
+        <h3>{{ (eventoData.descripcion || 'Evento') | uppercase }}</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>📅 Fecha:</strong> {{ eventoData.fecha | date:'dd/MM/yyyy' }}</p>
+        <p><strong>⏰ Hora:</strong> {{ eventoData.hora }}</p>
+        <p><strong>📍 Lugar:</strong> {{ eventoData.lugar }}</p>
+      </div>
+      <div class="card-footer">
+        <button class="btn danger full-width" (click)="avisarAlPadre()">Eliminar este Evento</button>
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    .full-width { width: 100%; display: block; text-align: center; }
+    .search-card { border: 2px dashed #007bff !important; }
+    .search-badge { background-color: #007bff; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; float: right; }
+  `]
 })
 export class EventoFilaComponent {
-  // @Input: Recibe un evento desde el componente padre (EventosPage)
   @Input() eventoData!: Evento;
-
-  // @Output: Emite un evento hacia el componente padre
   @Output() eventoSeleccionado = new EventEmitter<number>();
 
   avisarAlPadre() {
-    // Le enviamos el ID del evento al padre
     this.eventoSeleccionado.emit(this.eventoData.id);
   }
 }
