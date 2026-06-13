@@ -1,37 +1,70 @@
 <div class="app-shell" *ngIf="auth.isAuthenticated(); else authOutlet">
+  
   <aside class="sidebar">
     <div class="brand">
-      <span class="brand-mark">🏆</span>
-      <div>
-        <h2>Gestor</h2>
-        <p>Torneos deportivos</p>
+      <div class="brand-icon-glow">
+        <span class="brand-mark">🏆</span>
+      </div>
+      <div class="brand-text">
+        <h2>Torneos Deportivos</h2>
       </div>
     </div>
 
     <nav class="nav">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Panel</a>
-      <a routerLink="/eventos" routerLinkActive="active">Eventos</a>
-      <a routerLink="/participantes" routerLinkActive="active">Participantes</a>
-      <a routerLink="/inscripciones" routerLinkActive="active">Inscripciones</a>
-      <a routerLink="/canchas" routerLinkActive="active">Canchas</a>
-      <a routerLink="/contactos" routerLinkActive="active">Contactos</a>
+      <p class="nav-title">MENÚ PRINCIPAL</p>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="nav-icon">📊</span> Panel de Control
+      </a>
+      <a routerLink="/eventos" routerLinkActive="active">
+        <span class="nav-icon">⚽</span> Torneos y Eventos
+      </a>
+      <a routerLink="/participantes" routerLinkActive="active">
+        <span class="nav-icon">🏃‍♂️</span> Atletas y Equipos
+      </a>
+      <a routerLink="/inscripciones" routerLinkActive="active">
+        <span class="nav-icon">🎟️</span> Inscripciones
+      </a>
+      <a routerLink="/canchas" routerLinkActive="active">
+        <span class="nav-icon">🏟️</span> Sedes y Canchas
+      </a>
+      <a routerLink="/contactos" routerLinkActive="active">
+        <span class="nav-icon">📬</span> Bandeja de Mensajes
+      </a>
     </nav>
+    
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar">A</div>
+        <div>
+          <span class="user-name">Administrador</span>
+          <span class="user-role">Online</span>
+        </div>
+      </div>
+    </div>
   </aside>
 
-  <div class="main">
+  <div class="main-wrapper">
+    
     <header class="topbar">
-      <div>
-        <h1>Administración</h1>
-        <p>Frontend Angular conectado al backend en 8090.</p>
+      <div class="topbar-title">
+        <h1>Centro de Administración</h1>
+        <p>Sistema de gestión deportiva en tiempo real</p>
       </div>
       <div class="topbar-actions">
-        <span class="badge">API: http://localhost:8090</span>
-        <button class="btn btn-secondary" type="button" (click)="logout()">Salir</button>
+        <div class="api-badge">
+          <span class="pulse-dot"></span>
+          API: localhost:8090
+        </div>
+        <button class="btn-logout" type="button" (click)="logout()">
+          <span>Cerrar Sesión</span> 🚪
+        </button>
       </div>
     </header>
 
-    <section class="content">
-      <router-outlet></router-outlet>
+    <section class="content-scrollable">
+      <div class="content-inner">
+        <router-outlet></router-outlet>
+      </div>
     </section>
   </div>
 </div>

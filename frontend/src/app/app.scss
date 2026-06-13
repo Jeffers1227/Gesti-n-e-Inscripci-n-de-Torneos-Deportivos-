@@ -1,114 +1,189 @@
+/* ESTRUCTURA BASE PARA QUE EL MENÚ TE SIGA (NO SE MUEVA) */
 .app-shell {
-	display: grid;
-	grid-template-columns: 260px 1fr;
-	min-height: 100vh;
-	background: #f5f7fb;
+  display: flex;
+  height: 100vh; /* Ocupa el 100% del alto de la pantalla */
+  overflow: hidden; /* Evita el scroll global de la página */
+  background-color: #f8fafc;
+  font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
 }
 
+/* =========================================
+   BARRA LATERAL (SIDEBAR) PREMIUM
+   ========================================= */
 .sidebar {
-	background: #111827;
-	color: #e5e7eb;
-	padding: 24px 20px;
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
+  width: 280px;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); /* Modo oscuro elegante */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 100;
 }
 
+/* LOGO Y MARCA */
 .brand {
-	display: flex;
-	align-items: center;
-	gap: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0,0,0,0.1);
 }
 
-.brand-mark {
-	font-size: 28px;
+.brand-icon-glow {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  width: 45px;
+  height: 45px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
 
-.brand h2 {
-	margin: 0;
-	font-size: 20px;
-	color: #fff;
-}
+.brand-text h2 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: #f8fafc; }
+.brand-text p { margin: 0; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
 
-.brand p {
-	margin: 0;
-	font-size: 12px;
-	color: #9ca3af;
-}
-
+/* NAVEGACIÓN Y ENLACES */
 .nav {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+  flex-grow: 1;
+  gap: 0.25rem;
+}
+
+.nav-title {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
 }
 
 .nav a {
-	color: #e5e7eb;
-	text-decoration: none;
-	padding: 10px 12px;
-	border-radius: 10px;
-	font-weight: 500;
-	transition: background 0.2s ease, color 0.2s ease;
+  padding: 0.85rem 1rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
-.nav a.active,
+.nav-icon { margin-right: 12px; font-size: 1.2rem; transition: transform 0.3s; }
+
+/* EFECTOS DINÁMICOS AL PASAR EL MOUSE */
 .nav a:hover {
-	background: rgba(59, 130, 246, 0.2);
-	color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  transform: translateX(5px);
+}
+.nav a:hover .nav-icon { transform: scale(1.2); }
+
+/* INDICADOR DE PÁGINA ACTIVA */
+.nav a.active {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, transparent 100%);
+  color: #38bdf8;
+  border-left: 4px solid #38bdf8;
+  border-radius: 0 10px 10px 0;
+  font-weight: 600;
+}
+.nav a.active .nav-icon { filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5)); }
+
+/* FOOTER DEL SIDEBAR */
+.sidebar-footer { padding: 1.2rem; border-top: 1px solid rgba(255,255,255,0.05); }
+.user-info { display: flex; align-items: center; gap: 10px; }
+.avatar { background: #38bdf8; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #0f172a; }
+.user-name { display: block; font-size: 0.9rem; font-weight: 600; }
+.user-role { display: block; font-size: 0.75rem; color: #10b981; }
+
+/* =========================================
+   ÁREA PRINCIPAL Y TOPBAR
+   ========================================= */
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Oculta el scroll aquí */
 }
 
-.main {
-	display: flex;
-	flex-direction: column;
-}
-
+/* BARRA SUPERIOR BLANCA */
 .topbar {
-	background: #fff;
-	padding: 24px 32px;
-	border-bottom: 1px solid #e5e7eb;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  background: white;
+  padding: 1.2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
-.topbar h1 {
-	margin: 0;
-	font-size: 22px;
-	color: #111827;
+.topbar-title h1 { margin: 0; font-size: 1.4rem; color: #1e293b; font-weight: 800; }
+.topbar-title p { margin: 0; font-size: 0.85rem; color: #64748b; }
+
+.topbar-actions { display: flex; align-items: center; gap: 1.5rem; }
+
+/* BADGE DE API CON LUZ VERDE PARPADEANTE */
+.api-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  border: 1px solid #e2e8f0;
 }
 
-.topbar p {
-	margin: 4px 0 0;
-	color: #6b7280;
-	font-size: 13px;
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse 1.5s infinite;
 }
 
-.badge {
-	background: #e0f2fe;
-	color: #0369a1;
-	padding: 6px 12px;
-	border-radius: 999px;
-	font-size: 12px;
-	font-weight: 600;
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
 }
 
-.content {
-	padding: 32px;
+/* BOTÓN DE SALIR ELEGANTE */
+.btn-logout {
+  background: #fff1f2;
+  color: #e11d48;
+  border: 1px solid #fecdd3;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-logout:hover { background: #e11d48; color: white; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(225, 29, 72, 0.2); }
+
+/* =========================================
+   CONTENEDOR DE SCROLL (LA CLAVE)
+   ========================================= */
+.content-scrollable {
+  flex: 1;
+  overflow-y: auto; /* ESTO PERMITE QUE SOLO ESTA PARTE BAJE */
+  background-color: #f1f5f9;
 }
 
-@media (max-width: 1024px) {
-	.app-shell {
-		grid-template-columns: 1fr;
-	}
-
-	.sidebar {
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	.nav {
-		flex-direction: row;
-		flex-wrap: wrap;
-	}
+.content-inner {
+  padding: 2.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
