@@ -33,7 +33,9 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-   
+    // ¡MAGIA AQUÍ! 
+    // Ponemos la clave directamente en el código. Ya no usamos @Value("${app.jwt.secret}")
+    // Esto garantiza que Render NUNCA se quede sin la clave secreta.
     private final String jwtSecret = "EstaEsUnaClaveSuperSecretaYMuyLargaParaMiProyectoDeTorneos2024";
 
     @Bean
@@ -56,9 +58,11 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*")); 
+        // CAMBIO CLAVE AQUÍ: Usamos setAllowedOriginPatterns en lugar de setAllowedOrigins
+        configuration.setAllowedOriginPatterns(Arrays.asList("*")); 
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true); // Permitimos el paso de las credenciales
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

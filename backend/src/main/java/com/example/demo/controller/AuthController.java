@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(originPatterns = "*") 
 public class AuthController {
 
     private final AuthService authService;

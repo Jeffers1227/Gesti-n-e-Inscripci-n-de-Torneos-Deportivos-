@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/participantes")
-@CrossOrigin(origins = "*")
+@CrossOrigin(originPatterns = "*")
 public class ParticipanteController {
     
     private final ParticipanteService participanteService;
