@@ -4,7 +4,7 @@ package com.example.demo.controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
