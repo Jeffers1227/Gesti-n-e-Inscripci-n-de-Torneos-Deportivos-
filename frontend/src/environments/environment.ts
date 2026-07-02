@@ -1,3 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'http://localhost:8090'
+  production: true,
+  apiBaseUrl: 'https://torneos-inscripciones.onrender.com/api' 
 };
