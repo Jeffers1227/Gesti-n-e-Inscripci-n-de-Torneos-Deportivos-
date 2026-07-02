@@ -21,17 +21,18 @@ public class DemoApplication {
     CommandLineRunner initDatabase(UsuarioRepository usuarios, PasswordEncoder passwordEncoder) {
         return args -> {
             try {
-                if (!usuarios.existsByEmail("admin@demo.com")) {
+                // Cambiamos el correo a superadmin@demo.com para evitar chocar con datos viejos
+                if (!usuarios.existsByEmail("superadmin@demo.com")) {
                     Usuario admin = new Usuario(
-                            "Administrador",
-                            "admin@demo.com",
-                            passwordEncoder.encode("Admin123"),
+                            "Super Administrador",
+                            "superadmin@demo.com",
+                            passwordEncoder.encode("SuperAdmin123"),
                             Rol.ADMIN
                     );
                     usuarios.save(admin);
-                    System.out.println("✅ Usuario admin@demo.com creado con éxito en Clever Cloud.");
+                    System.out.println("✅ Usuario superadmin@demo.com creado con éxito en Clever Cloud.");
                 } else {
-                    System.out.println("👍 El usuario admin@demo.com ya existe.");
+                    System.out.println("👍 El usuario superadmin@demo.com ya existe.");
                 }
             } catch (Exception e) {
                 System.err.println("❌ Error al crear usuario inicial: " + e.getMessage());
