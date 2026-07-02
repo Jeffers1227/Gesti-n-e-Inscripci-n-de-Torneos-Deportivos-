@@ -17,7 +17,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*") 
 public class AuthController {
 
     private final AuthService authService;
@@ -30,18 +30,17 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registrar(@Valid @RequestBody RegisterRequest request) {
         authService.registrar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado correctamente para el torneo"); // [cite: 1296]
+        return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado correctamente para el torneo"); 
     }
 
     // Ruta para iniciar sesión y obtener el Token JWT
-   // Ruta para iniciar sesión y obtener el Token JWT
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             // Si todo sale bien, devuelve el token
             return ResponseEntity.ok(authService.login(request)); 
         } catch (Exception e) {
-            // Si falla, atrapamos el error y te lo mostramos en Postman
+            // Si falla, atrapamos el error y te lo mostramos en Postman o Consola
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("❌ Error al iniciar sesión: " + e.getMessage());
         }

@@ -22,7 +22,7 @@ import com.example.demo.service.EventoService;
 
 @RestController
 @RequestMapping("/eventos")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class EventoController {
     private final EventoService eventoService;
 
