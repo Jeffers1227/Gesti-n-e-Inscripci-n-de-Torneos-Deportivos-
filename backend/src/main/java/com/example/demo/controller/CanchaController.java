@@ -20,6 +20,7 @@ import com.example.demo.service.CanchaService;
 
 @RestController
 @RequestMapping("/canchas")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CanchaController {
     private final CanchaService canchaService;
 

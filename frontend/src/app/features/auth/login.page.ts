@@ -19,21 +19,28 @@ import Swal from 'sweetalert2';
         </div>
 
         <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
-          <div class="input-group">
-            <label>Correo Electrónico</label>
-            <input type="email" formControlName="email" placeholder="admin@sistema.com" />
+        <div class="input-group">
+          <label>Correo Electrónico</label>
+          <input type="email" formControlName="email" placeholder="admin@sistema.com" />
+          <div class="error-msg" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
+            <small *ngIf="form.get('email')?.errors?.['required']">⚠️ El correo es obligatorio.</small>
+            <small *ngIf="form.get('email')?.errors?.['email']">⚠️ Ingresa un formato válido.</small>
           </div>
-          
-          <div class="input-group">
-            <label>Contraseña</label>
-            <input type="password" formControlName="password" placeholder="••••••••" />
+        </div>
+        
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" formControlName="password" placeholder="••••••••" />
+          <div class="error-msg" *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+            <small>⚠️ La contraseña es requerida.</small>
           </div>
+        </div>
 
-          <button type="submit" [disabled]="form.invalid || loading" class="btn-login">
-            <span *ngIf="!loading">Acceder al Sistema</span>
-            <div class="spinner" *ngIf="loading"></div>
-          </button>
-        </form>
+        <button type="submit" [disabled]="form.invalid || loading" class="btn-login">
+          <span *ngIf="!loading">Acceder al Sistema</span>
+          <div class="spinner" *ngIf="loading"></div>
+        </button>
+      </form>
       </div>
     </div>
   `,
@@ -47,6 +54,9 @@ import Swal from 'sweetalert2';
       position: relative;
       overflow: hidden;
     }
+
+    .error-msg { color: #fca5a5; font-size: 0.8rem; margin-top: 5px; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
     /* Fondo animado sutil */
     .auth-page::before {

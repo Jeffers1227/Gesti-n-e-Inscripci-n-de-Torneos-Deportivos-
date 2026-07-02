@@ -19,6 +19,7 @@ import com.example.demo.service.ContactoService;
 
 @RestController
 @RequestMapping("/contacto")
+@CrossOrigin(origins = "http://localhost:4200")
 public class ContactoController {
     private final ContactoService contactoService;
 

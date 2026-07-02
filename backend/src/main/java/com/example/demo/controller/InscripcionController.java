@@ -21,6 +21,7 @@ import com.example.demo.service.ParticipanteService;
 
 @RestController
 @RequestMapping("/inscripciones")
+@CrossOrigin(origins = "http://localhost:4200")
 public class InscripcionController {
     private final InscripcionService inscripcionService;
     private final EventoService eventoService;
